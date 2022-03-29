@@ -5,60 +5,60 @@ CREATE SCHEMA IF NOT EXISTS `ocpizza` DEFAULT CHARACTER SET utf8mb4 ;
 USE `ocpizza` ;
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Adresse`
+-- Table `ocpizza`.`Address`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Adresse` (
-  `idAdresse` INT NOT NULL AUTO_INCREMENT,
-  `rue` VARCHAR(45) NOT NULL,
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Address` (
+  `idAddress` INT NOT NULL AUTO_INCREMENT,
+  `street` VARCHAR(45) NOT NULL,
   `complement` VARCHAR(45) NULL,
   `codePostal` VARCHAR(45) NOT NULL,
-  `ville` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idAdresse`))
+  `city` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idAddress`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Commerce`
+-- Table `ocpizza`.`Shop`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Commerce` (
-  `idCommerce` INT NOT NULL AUTO_INCREMENT,
-  `nom` VARCHAR(45) NOT NULL,
-  `idAdresse` INT NOT NULL,
-  PRIMARY KEY (`idCommerce`, `idAdresse`),
-  INDEX `fk_Commerce_Adresse1_idx` (`idAdresse` ASC) VISIBLE,
-  CONSTRAINT `fk_Point_Vente_Adresse1`
-    FOREIGN KEY (`idAdresse`)
-    REFERENCES `ocpizza`.`Adresse` (`idAdresse`)
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Shop` (
+  `idShop` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `idAddress` INT NOT NULL,
+  PRIMARY KEY (`idShop`, `idAddress`),
+  INDEX `fk_Shop_Address1_idx` (`idAddress` ASC) VISIBLE,
+  CONSTRAINT `fk_Shop_Address1`
+    FOREIGN KEY (`idAddress`)
+    REFERENCES `ocpizza`.`Address` (`idAddress`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Client`
+-- Table `ocpizza`.`Customer`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Client` (
-  `idClient` INT NOT NULL AUTO_INCREMENT,
-  `nom` VARCHAR(45) NOT NULL,
-  `prenom` VARCHAR(45) NOT NULL,
-  `date_naissance` DATE NOT NULL,
-  `telephone` VARCHAR(45) NOT NULL,
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Customer` (
+  `idCustomer` INT NOT NULL AUTO_INCREMENT,
+  `lastname` VARCHAR(45) NOT NULL,
+  `fistname` VARCHAR(45) NOT NULL,
+  `birthday` DATE NOT NULL,
+  `phone` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `mot_de_passe` VARCHAR(200) NOT NULL,
-  `idAdresse` INT NOT NULL,
-  `idCommerce` INT NOT NULL,
-  PRIMARY KEY (`idClient`, `idAdresse`, `idCommerce`),
+  `password` VARCHAR(200) NOT NULL,
+  `idAddress` INT NOT NULL,
+  `idShop` INT NOT NULL,
+  PRIMARY KEY (`idCustomer`, `idAddress`, `idShop`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  INDEX `fk_Client_Adresse1_idx` (`idAdresse` ASC) VISIBLE,
-  INDEX `fk_Client_Commerce1_idx` (`idCommerce` ASC) VISIBLE,
-  CONSTRAINT `fk_Client_Adresse1`
-    FOREIGN KEY (`idAdresse`)
-    REFERENCES `ocpizza`.`Adresse` (`idAdresse`)
+  INDEX `fk_Customer_Address1_idx` (`idAddress` ASC) VISIBLE,
+  INDEX `fk_Customer_Shop1_idx` (`idShop` ASC) VISIBLE,
+  CONSTRAINT `fk_Customer_Address1`
+    FOREIGN KEY (`idAddress`)
+    REFERENCES `ocpizza`.`Address` (`idAddress`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Client_Commerce1`
-    FOREIGN KEY (`idCommerce`)
-    REFERENCES `ocpizza`.`Commerce` (`idCommerce`)
+  CONSTRAINT `fk_Customer_Shop1`
+    FOREIGN KEY (`idShop`)
+    REFERENCES `ocpizza`.`Shop` (`idShop`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -69,18 +69,18 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ocpizza`.`Ingredient` (
   `idIngredient` INT NOT NULL AUTO_INCREMENT,
-  `nom` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idIngredient`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Recette`
+-- Table `ocpizza`.`Recipe`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Recette` (
-  `idRecette` INT NOT NULL AUTO_INCREMENT,
-  `recette` LONGTEXT NOT NULL,
-  PRIMARY KEY (`idRecette`))
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Recipe` (
+  `idRecipe` INT NOT NULL AUTO_INCREMENT,
+  `recipe` LONGTEXT NOT NULL,
+  PRIMARY KEY (`idRecipe`))
 ENGINE = InnoDB;
 
 
@@ -89,67 +89,67 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ocpizza`.`Pizza` (
   `idPizza` INT NOT NULL AUTO_INCREMENT,
-  `nom_pizza` VARCHAR(45) NOT NULL,
-  `prix` FLOAT NOT NULL,
-  `idRecette` INT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `price` FLOAT NOT NULL,
+  `idRecipe` INT NULL,
   PRIMARY KEY (`idPizza`),
-  INDEX `fk_Pizza_Recette1_idx` (`idRecette` ASC) VISIBLE,
-  UNIQUE INDEX `Recette_idRecette_UNIQUE` (`idRecette` ASC) VISIBLE,
+  INDEX `fk_Pizza_Recette1_idx` (`idRecipe` ASC) VISIBLE,
+  UNIQUE INDEX `Recette_idRecette_UNIQUE` (`idRecipe` ASC) VISIBLE,
   CONSTRAINT `fk_Pizza_Recette1`
-    FOREIGN KEY (`idRecette`)
-    REFERENCES `ocpizza`.`Recette` (`idRecette`)
+    FOREIGN KEY (`idRecipe`)
+    REFERENCES `ocpizza`.`Recipe` (`idRecipe`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Etat`
+-- Table `ocpizza`.`Status`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Etat` (
-  `idEtat` INT NOT NULL AUTO_INCREMENT,
-  `nom` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idEtat`))
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Status` (
+  `idStatus` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idStatus`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Facture`
+-- Table `ocpizza`.`Invoice`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Facture` (
-  `idFacture` INT NOT NULL AUTO_INCREMENT,
-  `prix` FLOAT NOT NULL,
-  `creation_date` DATETIME NOT NULL,
-  PRIMARY KEY (`idFacture`))
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Invoice` (
+  `idInvoice` INT NOT NULL AUTO_INCREMENT,
+  `price` FLOAT NOT NULL,
+  `creationDate` DATETIME NOT NULL,
+  PRIMARY KEY (`idInvoice`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Commande`
+-- Table `ocpizza`.`Order_`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Commande` (
-  `idCommande` INT NOT NULL AUTO_INCREMENT,
-  `idClient` INT NOT NULL,
-  `idEtat` INT NOT NULL,
-  `idFacture` INT NULL,
-  PRIMARY KEY (`idCommande`, `idClient`, `idEtat`),
-  INDEX `fk_Commande_Client1_idx` (`idClient` ASC) VISIBLE,
-  INDEX `fk_Commande_Etat1_idx` (`idEtat` ASC) VISIBLE,
-  INDEX `fk_Commande_Facture1_idx` (`idFacture` ASC) VISIBLE,
-  UNIQUE INDEX `Facture_idFacture_UNIQUE` (`idFacture` ASC) VISIBLE,
-  CONSTRAINT `fk_Commande_Client1`
-    FOREIGN KEY (`idClient`)
-    REFERENCES `ocpizza`.`Client` (`idClient`)
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Order_` (
+  `idOrder_` INT NOT NULL AUTO_INCREMENT,
+  `idCustomer` INT NOT NULL,
+  `idStatus` INT NOT NULL,
+  `idInvoice` INT NULL,
+  PRIMARY KEY (`idOrder_`, `idCustomer`, `idStatus`),
+  INDEX `fk_Order_Customer1_idx` (`idCustomer` ASC) VISIBLE,
+  INDEX `fk_Order_Status1_idx` (`idStatus` ASC) VISIBLE,
+  INDEX `fk_Order_Invoice1_idx` (`idInvoice` ASC) VISIBLE,
+  UNIQUE INDEX `Invoice_idInvoice_UNIQUE` (`idInvoice` ASC) VISIBLE,
+  CONSTRAINT `fk_Order_Customer1`
+    FOREIGN KEY (`idCustomer`)
+    REFERENCES `ocpizza`.`Customer` (`idCustomer`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Commande_Etat Commande1`
-    FOREIGN KEY (`idEtat`)
-    REFERENCES `ocpizza`.`Etat` (`idEtat`)
+  CONSTRAINT `fk_Order_Status1`
+    FOREIGN KEY (`idStatus`)
+    REFERENCES `ocpizza`.`Status` (`idStatus`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Commande_Facture1`
-    FOREIGN KEY (`idFacture`)
-    REFERENCES `ocpizza`.`Facture` (`idFacture`)
+  CONSTRAINT `fk_Order_Invoice1`
+    FOREIGN KEY (`idInvoice`)
+    REFERENCES `ocpizza`.`Invoice` (`idInvoice`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -160,78 +160,55 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ocpizza`.`Role` (
   `idRole` INT NOT NULL AUTO_INCREMENT,
-  `nom` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idRole`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Employe`
+-- Table `ocpizza`.`Employee`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Employe` (
-  `idEmploye` INT NOT NULL AUTO_INCREMENT,
-  `nom` VARCHAR(45) NOT NULL,
-  `prenom` VARCHAR(45) NOT NULL,
-  `date_naissance` DATE NOT NULL,
-  `telephone` VARCHAR(45) NOT NULL,
+CREATE TABLE IF NOT EXISTS `ocpizza`.`Employee` (
+  `idEmployee` INT NOT NULL AUTO_INCREMENT,
+  `lastname` VARCHAR(45) NOT NULL,
+  `firstname` VARCHAR(45) NOT NULL,
+  `birthday` DATE NOT NULL,
+  `phone` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `mot_de_passe` VARCHAR(200) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
   `idRole` INT NOT NULL,
-  `idAdresse` INT NOT NULL,
-  `idCommerce` INT NOT NULL,
-  PRIMARY KEY (`idEmploye`, `idRole`, `idAdresse`, `idCommerce`),
+  `idAddress` INT NOT NULL,
+  `idShop` INT NOT NULL,
+  PRIMARY KEY (`idEmployee`, `idRole`, `idAddress`, `idShop`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  INDEX `fk_Employe_Role_idx` (`idRole` ASC) VISIBLE,
-  INDEX `fk_Employe_Adresse1_idx` (`idAdresse` ASC) VISIBLE,
-  INDEX `fk_Employe_Commerce1_idx` (`idCommerce` ASC) VISIBLE,
-  CONSTRAINT `fk_Employe_Role`
+  INDEX `fk_Employee_Role_idx` (`idRole` ASC) VISIBLE,
+  INDEX `fk_Employee_Address1_idx` (`idAddress` ASC) VISIBLE,
+  INDEX `fk_Employee_Shop1_idx` (`idShop` ASC) VISIBLE,
+  CONSTRAINT `fk_Employee_Role`
     FOREIGN KEY (`idRole`)
     REFERENCES `ocpizza`.`Role` (`idRole`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Employe_Adresse1`
-    FOREIGN KEY (`idAdresse`)
-    REFERENCES `ocpizza`.`Adresse` (`idAdresse`)
+  CONSTRAINT `fk_Employee_Address1`
+    FOREIGN KEY (`idAddress`)
+    REFERENCES `ocpizza`.`Address` (`idAddress`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Employe_Commerce1`
-    FOREIGN KEY (`idCommerce`)
-    REFERENCES `ocpizza`.`Commerce` (`idCommerce`)
+  CONSTRAINT `fk_Employee_Shop1`
+    FOREIGN KEY (`idShop`)
+    REFERENCES `ocpizza`.`Shop` (`idShop`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `ocpizza`.`Pizza_has_Commande`
+-- Table `ocpizza`.`PizzaHasIngredient`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Pizza_has_Commande` (
-  `idPizza` INT NOT NULL,
-  `idCommande` INT NOT NULL,
-  `quantité` INT NOT NULL,
-  PRIMARY KEY (`idPizza`, `idCommande`),
-  INDEX `fk_Pizza_has_Commande_Commande1_idx` (`idCommande` ASC) VISIBLE,
-  INDEX `fk_Pizza_has_Commande_Pizza1_idx` (`idPizza` ASC) VISIBLE,
-  CONSTRAINT `fk_Pizza_has_Commande_Pizza1`
-    FOREIGN KEY (`idPizza`)
-    REFERENCES `ocpizza`.`Pizza` (`idPizza`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Pizza_has_Commande_Commande1`
-    FOREIGN KEY (`idCommande`)
-    REFERENCES `ocpizza`.`Commande` (`idCommande`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `ocpizza`.`Pizza_has_Ingredient`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ocpizza`.`Pizza_has_Ingredient` (
+CREATE TABLE IF NOT EXISTS `ocpizza`.`PizzaHasIngredient` (
   `idPizza` INT NOT NULL,
   `idIngredient` INT NOT NULL,
-  `quantite_g` FLOAT NOT NULL,
+  `gramQuantity` FLOAT NOT NULL,
   PRIMARY KEY (`idPizza`, `idIngredient`),
   INDEX `fk_Pizza_has_Ingredient_Ingredient1_idx` (`idIngredient` ASC) VISIBLE,
   INDEX `fk_Pizza_has_Ingredient_Pizza1_idx` (`idPizza` ASC) VISIBLE,
@@ -253,24 +230,47 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ocpizza`.`Stock` (
   `idStock` INT NOT NULL AUTO_INCREMENT,
-  `unite_g` FLOAT NOT NULL,
-  `prix_unitaire` FLOAT NOT NULL,
-  `date_achat` DATE NOT NULL,
-  `date_expiration` DATE NOT NULL,
-  `quantite_unite` FLOAT NOT NULL,
+  `unitaryGrams` FLOAT NOT NULL,
+  `unitaryPrice` FLOAT NOT NULL,
+  `purchaseDate` DATE NOT NULL,
+  `expirationDate` DATE NOT NULL,
+  `unitQuantity` FLOAT NOT NULL,
   `idIngredient` INT NOT NULL,
-  `idCommerce` INT NOT NULL,
-  PRIMARY KEY (`idStock`, `idIngredient`, `idCommerce`),
+  `idShop` INT NOT NULL,
+  PRIMARY KEY (`idStock`, `idIngredient`, `idShop`),
   INDEX `fk_Stock_Ingredient1_idx` (`idIngredient` ASC) VISIBLE,
-  INDEX `fk_Stock_Commerce1_idx` (`idCommerce` ASC) VISIBLE,
+  INDEX `fk_Stock_Commerce1_idx` (`idShop` ASC) VISIBLE,
   CONSTRAINT `fk_Stock_Ingredient1`
     FOREIGN KEY (`idIngredient`)
     REFERENCES `ocpizza`.`Ingredient` (`idIngredient`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Stock_Point_Vente1`
-    FOREIGN KEY (`idCommerce`)
-    REFERENCES `ocpizza`.`Commerce` (`idCommerce`)
+    FOREIGN KEY (`idShop`)
+    REFERENCES `ocpizza`.`Shop` (`idShop`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `ocpizza`.`OrderHasPizza`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ocpizza`.`OrderHasPizza` (
+  `idOrder_` INT NOT NULL,
+  `idPizza` INT NOT NULL,
+  `quantity` INT NOT NULL,
+  PRIMARY KEY (`idPizza`, `idOrder_`),
+  INDEX `fk_Order_has_Pizza_Pizza1_idx` (`idPizza` ASC) VISIBLE,
+  INDEX `fk_Order_has_Pizza_Order1_idx` (`idOrder_` ASC) VISIBLE,
+  CONSTRAINT `fk_Order_has_Pizza_Order1`
+    FOREIGN KEY (`idOrder_`)
+    REFERENCES `ocpizza`.`Order_` (`idOrder_`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Order_has_Pizza_Pizza1`
+    FOREIGN KEY (`idPizza`)
+    REFERENCES `ocpizza`.`Pizza` (`idPizza`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
